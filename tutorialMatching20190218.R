@@ -7,7 +7,7 @@ library("zoo")
 library("Matching")
 library("tableone")
 library("pROC")
-
+library(skimr)
 
 
 
@@ -55,6 +55,7 @@ ggplot(rhc) +
 # exact matching --------------------------------------------------------------
 # why exact matching is problematic
 # select a small number of key matching variables
+# Category of diagnosis 1
 matchVars <- c("age", "sex", "cat1", "meanbp1")
 
 # filter on key matching variables
@@ -77,6 +78,7 @@ rhc <- rhc %>%
 # Match() requires numeric variables
 matchVarsDf <- rhc %>% 
   dplyr::select(-dth30, -swang1) %>%
+  # Conditial mutation, which is useful
   mutate_if(is.character, funs(as.numeric(as.factor(.))))
   
 # why exact matching is problematci
@@ -218,7 +220,7 @@ exp(cbind(OddsRatios = coef(glmM2), confint(glmM2)))
 
 # greedy matching on Mahanalobis ----------------------------------------------
 # add-in some more covariates
-rhc <- readRDS("rhc.RDS")
+rhc <- readRDS("rhcDataset.RDS")
 matchVars <- c("age", "sex", "cat1", "meanbp1"
                , "surv2md1", "hrt1", "resp1", "renalhx", "liverhx")
 
@@ -262,7 +264,7 @@ table(greedyMatch1Df$swang1)
 
 # check balance
 matchedTbl1 <- CreateTableOne(vars = matchVars, strata = "swang1", data = greedyMatch1Df , test = FALSE)
-print(matchedTbl1, smd = TRUE)
+print(matchedTbl1, smd = TRUE, nonnormal = c('age','surv2md1'))
 
 # examine outcome
 prop.table(table(greedyMatch1Df$swang1, greedyMatch1Df$dth30, useNA = "ifany"), margin = 1)

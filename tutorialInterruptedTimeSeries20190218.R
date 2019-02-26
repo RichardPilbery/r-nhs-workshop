@@ -291,7 +291,7 @@ summary(m03)$dispersion
 # http://r-statistics.co/Time-Series-Analysis-With-R.html
 # https://stats.stackexchange.com/questions/60994/fit-a-sinusoidal-term-to-data
 # try quasipoisson to account for overdispersion
-m04 <- glm(aces ~ time + smokban + tsModel::harmonic(month, 1, 12)å, family = quasipoisson, sicily)
+m04 <- glm(aces ~ time + smokban + tsModel::harmonic(month, 1, 12), family = quasipoisson, sicily)
 summary(m04)
 round(Epi::ci.lin(m04, Exp = T), 3)
 
@@ -322,4 +322,3 @@ ggplot(data = sicily %>% mutate(m04 = predict(m04, type = "response", data = sic
     , panel.grid.major.x = element_line(colour = c("white", rep(c(NA, "white"), t = 6)))
     , axis.ticks.x=element_line(colour=c("black", rep(c(NA, "black"), t = 6)))
   )
-
